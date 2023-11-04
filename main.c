@@ -1,17 +1,61 @@
-#include "lwip/apps/httpd.h"
+#include <stdio.h>
 #include "pico/stdlib.h"
+
+//WIFI
 #include "pico/cyw43_arch.h"
+#include "lwip/apps/httpd.h"
 #include "lwipopts.h"
 #include "ssi.h"
 #include "cgi.h"
+#include "lwip/netif.h"
+#include "lwip/ip4_addr.h"
+
+//FreeROTS 
+#include "FreeRTOS.h"
+#include "task.h"
+#include "message_buffer.h"
+
+//Drivers
+#include "driver/motor/motor.h"
+#include "driver/magnometer/magnometer.h"
+#include "driver/wheelEncoder/wheelEncoder.h"
+#include "driver/irline/irline.h"
 
 // WIFI Credentials - take care if pushing to github!
-const char WIFI_SSID[] = "XXX";
-const char WIFI_PASSWORD[] = "XXX";
+const char WIFI_SSID[] = "ASUS_C8_5G";
+const char WIFI_PASSWORD[] = "Malcolm2069";
 
-int main() {
-    stdio_init_all();
 
+
+void moving_task(__unused void *params)
+{
+    vTaskDelay(1000);
+    init_right_motor();
+    init_left_motor();
+
+    while (true)
+    {   //Test Forward
+        move_forward();
+        vTaskDelay(5000);
+        //Test Right
+        //turn_right();
+        ////Test Backwards
+        //move_backward();
+        //vTaskDelay(5000);
+        //stop();
+    }
+    
+}
+
+void vLaunch(void)
+{
+    TaskHandle_t moveCar;
+    xTaskCreate(moving_task, "MoveCar", configMINIMAL_STACK_SIZE, NULL, 3, &moveCar);
+
+    vTaskStartScheduler();
+}
+
+void connectWifi(){
     cyw43_arch_init();
 
     cyw43_arch_enable_sta_mode();
@@ -32,7 +76,16 @@ int main() {
     printf("SSI Handler initialised\n");
     cgi_init();
     printf("CGI Handler initialised\n");
-    
-    // Infinite loop
-    while(1);
+}
+
+
+int main() {
+    stdio_init_all();
+    stdio_usb_init();
+
+    connectWifi();
+
+    vLaunch();
+
+    return 0;
 }
