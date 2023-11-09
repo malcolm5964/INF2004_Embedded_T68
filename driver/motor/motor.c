@@ -87,7 +87,7 @@ void init_left_motor(){
 
 
 int max_pwm = 50000; //MAx PWM = 50000
-double kp = 0.05; //kp = 10
+double kp = 2;
 int16_t current_PWM_left;
 int16_t current_PWM_right;
 
@@ -103,20 +103,19 @@ void move_forward_left(int target_speed, int current_speed){
     //Calculate the Control Variable
     double proportional = kp * error;
 
-    int16_t PWM = (int16_t)(proportional / 500 * max_pwm);
+    int16_t PWM = (int16_t)(proportional);
 
     current_PWM_left += PWM;
-
-    printf("LEFT PWM: %i\n", current_PWM_left);
 
     // Apply limits to the control variable
     if (current_PWM_left > max_pwm) {
         current_PWM_left = max_pwm;
-    } else if (current_PWM_left < 10000) {
-        current_PWM_left = 10000;
+    } else if (current_PWM_left < 7000) {
+        current_PWM_left = 7000;
     }
 
     set_left_speed(current_PWM_left);
+    printf("LEFT PWM: %i\n", current_PWM_left);
 }
 
 void move_forward_right(int target_speed, int current_speed){
