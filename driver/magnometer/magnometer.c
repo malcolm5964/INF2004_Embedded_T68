@@ -21,7 +21,7 @@ const int CRB_REG_M_ADDR = 0x01;
 const int MR_REG_M_ADDR = 0x02;
 
 int CRA_REG_M_value = 0x0C;
-int CRB_REG_M_value = 0x40; //Gauss strength
+int CRB_REG_M_value = 0x10; //Gauss strength
 int MR_REG_M_value = 0x00;
 
 const uint8_t MAG_OUT_X_H_M = 0x03;

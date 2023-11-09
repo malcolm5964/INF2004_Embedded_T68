@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include <math.h>
 
 //WIFI
 #include "pico/cyw43_arch.h"
@@ -7,8 +8,7 @@
 #include "lwipopts.h"
 #include "ssi.h"
 #include "cgi.h"
-#include "lwip/netif.h"
-#include "lwip/ip4_addr.h"
+
 
 //FreeROTS 
 #include "FreeRTOS.h"
@@ -22,40 +22,48 @@
 #include "driver/irline/irline.h"
 
 // WIFI Credentials - take care if pushing to github!
-const char WIFI_SSID[] = "ASUS_C8_5G";
-const char WIFI_PASSWORD[] = "Malcolm2069";
+const char WIFI_SSID[] = "koh_family";
+const char WIFI_PASSWORD[] = "koh103325";
+
+#define mbaTASK_MESSAGE_BUFFER_SIZE (60)
+static MessageBufferHandle_t leftSpeedBuffer;
 
 
 
 void moving_task(__unused void *params)
 {
-    vTaskDelay(1000);
+    int64_t leftSpeed;
+    vTaskDelay(10000);
     init_right_motor();
     init_left_motor();
 
     while (true)
-    {   //Test Forward
-        move_forward();
-        vTaskDelay(5000);
-        //Test Right
-        //turn_right();
-        ////Test Backwards
-        //move_backward();
+    {   
+        vTaskDelay(100);
+        //Test Forward
+        //move_forward_left(120, currentSpeedLeft); //(80mm)
+        move_forward_right(120, currentSpeedRight);
+        
         //vTaskDelay(5000);
-        //stop();
     }
-    
 }
 
-void vLaunch(void)
+//void mapping_task(__unused void *params)
+//{
+//    initGraph(20); //20 vertex
+//    connectEdge();
+//}
+
+void measureSpeed_task(__unused void *params)
 {
-    TaskHandle_t moveCar;
-    xTaskCreate(moving_task, "MoveCar", configMINIMAL_STACK_SIZE, NULL, 3, &moveCar);
-
-    vTaskStartScheduler();
+    vTaskDelay(10000);
+    //initWheelEncoderLeft();
+    initWheelEncoderRight();
+    //measureSpeedLeft();
+    measureSpeedRight();
 }
 
-void connectWifi(){
+void webServer_task(__unused void *params){
     cyw43_arch_init();
 
     cyw43_arch_enable_sta_mode();
@@ -71,19 +79,42 @@ void connectWifi(){
     httpd_init();
     printf("Http server initialised\n");
 
-    // Configure SSI and CGI handler
+    //Configure SSI and CGI handler
     ssi_init(); 
     printf("SSI Handler initialised\n");
     cgi_init();
     printf("CGI Handler initialised\n");
+
+    while(1);
 }
+
+
+
+void vLaunch(void)
+{
+    TaskHandle_t moveCar;
+    xTaskCreate(moving_task, "MoveCar", configMINIMAL_STACK_SIZE, NULL, 3, &moveCar);
+
+    TaskHandle_t measureSpeed;
+    xTaskCreate(measureSpeed_task, "MeasureSpeed", configMINIMAL_STACK_SIZE, NULL, 3, &measureSpeed);
+
+    TaskHandle_t webServer;
+    xTaskCreate(webServer_task, "WebServer", configMINIMAL_STACK_SIZE, NULL, 3, &webServer);
+
+    //TaskHandle_t mapping;
+    //xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
+
+    leftSpeedBuffer = xMessageBufferCreate(mbaTASK_MESSAGE_BUFFER_SIZE);
+
+    vTaskStartScheduler();
+}
+
+
 
 
 int main() {
     stdio_init_all();
     stdio_usb_init();
-
-    connectWifi();
 
     vLaunch();
 

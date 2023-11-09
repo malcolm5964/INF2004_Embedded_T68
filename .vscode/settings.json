@@ -29,6 +29,15 @@
         "cyw43_arch.h": "c",
         "message_buffer.h": "c",
         "adc.h": "c",
-        "pwm.h": "c"
-    }
+        "pwm.h": "c",
+        "i2c.h": "c",
+        "math.h": "c",
+        "wheelencoder.h": "c",
+        "motor.h": "c",
+        "ip4_addr.h": "c",
+        "gpio.h": "c",
+        "lwipopts_examples_common.h": "c",
+        "magnometer.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }

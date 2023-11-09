@@ -3,10 +3,8 @@
 
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
-#include "hardware/i2c.h"
 
 #include "../magnometer/magnometer.h"
-#include "lwip/apps/httpd.h"
 
 extern const uint PWM_LEFT;
 extern const uint N1;
@@ -31,7 +29,8 @@ void stop();
 void set_left_speed(int level);
 void set_right_speed(int level);
 
-void move_forward();
+void move_forward_left(int target_speed, int current_speed);
+void move_forward_right(int target_speed, int current_speed);
 void move_backward();
 void turn_left();
 void turn_right();

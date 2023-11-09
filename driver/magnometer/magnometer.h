@@ -4,6 +4,8 @@
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 
+#define M_PI 3.14159265358979323846
+
 //Magnetometer
 extern const uint mag_VIN;
 

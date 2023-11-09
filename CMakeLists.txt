@@ -4,10 +4,11 @@ set(PROGRAM_NAME pico_w_webserver)
 set(PICO_BOARD pico_w)
 
 include(pico_sdk_import.cmake)
+include(FreeRTOS_Kernel_import.cmake)
 
 project(pico_w_webserver)
 
-include(FreeRTOS_Kernel_import.cmake)
+
 
 pico_sdk_init()
 
@@ -29,15 +30,16 @@ target_include_directories(${PROGRAM_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}
 )
 
-    target_link_libraries(${PROGRAM_NAME}
-        FreeRTOS-Kernel-Heap4   
+    target_link_libraries(${PROGRAM_NAME} 
         pico_cyw43_arch_lwip_threadsafe_background
         pico_lwip_http
+        pico_lwip_iperf
         pico_stdlib
         hardware_adc
         hardware_pwm
         hardware_i2c
         hardware_timer
+        FreeRTOS-Kernel-Heap4  
     )
 
     pico_enable_stdio_usb(${PROGRAM_NAME} TRUE)
