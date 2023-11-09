@@ -130,20 +130,19 @@ void move_forward_right(int target_speed, int current_speed){
     //Calculate the Control Variable
     double proportional = kp * error;
 
-    int16_t PWM = (int16_t)(proportional / 500 * max_pwm);
+    int16_t PWM = (int16_t)(proportional);
 
     current_PWM_right += PWM;
-
-    printf("RIGHT PWM: %i\n", current_PWM_right);
 
     // Apply limits to the control variable
     if (current_PWM_right > max_pwm) {
         current_PWM_right = max_pwm;
-    } else if (current_PWM_right < 10000) {
-        current_PWM_right = 10000;
+    } else if (current_PWM_right < 7000) {
+        current_PWM_right = 7000;
     }
 
     set_right_speed(current_PWM_right);
+    printf("RIGHT PWM: %i\n", current_PWM_right);
 }
 
 void move_backward(){

@@ -114,5 +114,6 @@ uint64_t measureSpeedLeft(){
                 previousTime = current_time;
             }
         }
+        
     }
 }

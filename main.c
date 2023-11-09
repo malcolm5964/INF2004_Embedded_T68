@@ -41,7 +41,7 @@ void moving_task(__unused void *params)
     {   
         vTaskDelay(100);
         //Test Forward
-        //move_forward_left(120, currentSpeedLeft); //(80mm)
+        move_forward_left(120, currentSpeedLeft); //(80mm)
         move_forward_right(120, currentSpeedRight);
         
         //vTaskDelay(5000);
@@ -57,9 +57,9 @@ void moving_task(__unused void *params)
 void measureSpeed_task(__unused void *params)
 {
     vTaskDelay(10000);
-    //initWheelEncoderLeft();
+    initWheelEncoderLeft();
     initWheelEncoderRight();
-    //measureSpeedLeft();
+    measureSpeedLeft();
     measureSpeedRight();
 }
 
