@@ -20,48 +20,34 @@
 #include "driver/magnometer/magnometer.h"
 #include "driver/wheelEncoder/wheelEncoder.h"
 #include "driver/irline/irline.h"
+#include "driver/mapping/mapping.h"
+
 
 // WIFI Credentials - take care if pushing to github!
 const char WIFI_SSID[] = "koh_family";
 const char WIFI_PASSWORD[] = "koh103325";
 
-#define mbaTASK_MESSAGE_BUFFER_SIZE (60)
-static MessageBufferHandle_t leftSpeedBuffer;
 
-
-
-void moving_task(__unused void *params)
-{
-    int64_t leftSpeed;
-    vTaskDelay(10000);
-    init_right_motor();
-    init_left_motor();
-
-    while (true)
-    {   
-        vTaskDelay(100);
-        //Test Forward
-        move_forward_left(120, currentSpeedLeft); //(80mm)
-        move_forward_right(120, currentSpeedRight);
-        
-        //vTaskDelay(5000);
-    }
-}
-
-//void mapping_task(__unused void *params)
-//{
-//    initGraph(20); //20 vertex
-//    connectEdge();
-//}
-
-void measureSpeed_task(__unused void *params)
+void mapping_task(__unused void *params)
 {
     vTaskDelay(10000);
     initWheelEncoderLeft();
     initWheelEncoderRight();
-    measureSpeedLeft();
-    measureSpeedRight();
+    init_right_motor();
+    init_left_motor();
+    vTaskDelay(5000);
+    //initGraph();
+    move(5, 0);
 }
+
+
+void irline_task(__unused void *params)
+{
+    vTaskDelay(10000);
+    init_ir();
+    get_ir_value();
+}
+
 
 void webServer_task(__unused void *params){
     cyw43_arch_init();
@@ -92,19 +78,14 @@ void webServer_task(__unused void *params){
 
 void vLaunch(void)
 {
-    TaskHandle_t moveCar;
-    xTaskCreate(moving_task, "MoveCar", configMINIMAL_STACK_SIZE, NULL, 3, &moveCar);
-
-    TaskHandle_t measureSpeed;
-    xTaskCreate(measureSpeed_task, "MeasureSpeed", configMINIMAL_STACK_SIZE, NULL, 3, &measureSpeed);
-
     TaskHandle_t webServer;
     xTaskCreate(webServer_task, "WebServer", configMINIMAL_STACK_SIZE, NULL, 3, &webServer);
 
-    //TaskHandle_t mapping;
-    //xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
-
-    leftSpeedBuffer = xMessageBufferCreate(mbaTASK_MESSAGE_BUFFER_SIZE);
+    TaskHandle_t mapping;
+    xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
+    
+    TaskHandle_t irline;
+    xTaskCreate(irline_task, "Irline", configMINIMAL_STACK_SIZE, NULL, 3, &irline);
 
     vTaskStartScheduler();
 }

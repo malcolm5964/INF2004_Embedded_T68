@@ -37,7 +37,8 @@
         "ip4_addr.h": "c",
         "gpio.h": "c",
         "lwipopts_examples_common.h": "c",
-        "magnometer.h": "c"
+        "magnometer.h": "c",
+        "irline.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

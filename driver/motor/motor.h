@@ -5,6 +5,7 @@
 #include "hardware/gpio.h"
 
 #include "../magnometer/magnometer.h"
+#include "../irline/irline.h"
 
 extern const uint PWM_LEFT;
 extern const uint N1;
@@ -29,8 +30,8 @@ void stop();
 void set_left_speed(int level);
 void set_right_speed(int level);
 
-void move_forward_left(int target_speed, int current_speed);
-void move_forward_right(int target_speed, int current_speed);
+void move_forward_left(int target_speed, int current_speed, int direction);
+void move_forward_right(int target_speed, int current_speed, int direction);
 
 void move_backward();
 void turn_left();

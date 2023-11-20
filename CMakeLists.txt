@@ -24,6 +24,7 @@ add_executable(${PROGRAM_NAME}
     driver/magnometer/magnometer.c
     driver/wheelEncoder/wheelEncoder.c
     driver/irline/irline.c
+    driver/mapping/mapping.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE

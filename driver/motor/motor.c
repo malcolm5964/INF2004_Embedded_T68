@@ -91,58 +91,91 @@ double kp = 2;
 int16_t current_PWM_left;
 int16_t current_PWM_right;
 
-void move_forward_left(int target_speed, int current_speed){
+void move_forward_left(int target_speed, int current_speed, int direction){
 
-    set_direction_forward();
+    
+    if(direction == 0)
+    {
+        set_direction_forward();
+    }
+    if(direction == 1)
+    {
 
-    printf("LEFT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
-        
-    //Calculate error
-    double error = target_speed - current_speed;
-
-    //Calculate the Control Variable
-    double proportional = kp * error;
-
-    int16_t PWM = (int16_t)(proportional);
-
-    current_PWM_left += PWM;
-
-    // Apply limits to the control variable
-    if (current_PWM_left > max_pwm) {
-        current_PWM_left = max_pwm;
-    } else if (current_PWM_left < 7000) {
-        current_PWM_left = 7000;
+        set_direction_back();
     }
 
-    set_left_speed(current_PWM_left);
-    printf("LEFT PWM: %i\n", current_PWM_left);
+
+    //printf("LEFT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
+
+    if(target_speed == 0)
+    {
+        set_left_speed(0);
+    }
+    else
+    {
+        //Calculate error
+        double error = target_speed - current_speed;
+
+        //Calculate the Control Variable
+        double proportional = kp * error;
+
+        int16_t PWM = (int16_t)(proportional);
+
+        current_PWM_left += PWM;
+
+        // Apply limits to the control variable
+        if (current_PWM_left > max_pwm) {
+            current_PWM_left = max_pwm;
+        } else if (current_PWM_left < 13500) {
+            current_PWM_left = 13500;
+        }
+
+        set_left_speed(current_PWM_left);
+        //printf("LEFT PWM: %i\n", current_PWM_left);
+    }
+        
 }
 
-void move_forward_right(int target_speed, int current_speed){
+void move_forward_right(int target_speed, int current_speed, int direction){
 
-    set_direction_forward();
+    if(direction == 0)
+    {
+        set_direction_forward();
+    }
+    if(direction == 1)
+    {
 
-    printf("RIGHT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
-        
-    //Calculate error
-    double error = target_speed - current_speed;
-
-    //Calculate the Control Variable
-    double proportional = kp * error;
-
-    int16_t PWM = (int16_t)(proportional);
-
-    current_PWM_right += PWM;
-
-    // Apply limits to the control variable
-    if (current_PWM_right > max_pwm) {
-        current_PWM_right = max_pwm;
-    } else if (current_PWM_right < 7000) {
-        current_PWM_right = 7000;
+        set_direction_back();
     }
 
-    set_right_speed(current_PWM_right);
-    printf("RIGHT PWM: %i\n", current_PWM_right);
+    //printf("RIGHT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
+
+    if(target_speed == 0)
+    {
+        set_right_speed(0);
+    }
+    else
+    {
+        //Calculate error
+        double error = target_speed - current_speed;
+
+        //Calculate the Control Variable
+        double proportional = kp * error;
+
+        int16_t PWM = (int16_t)(proportional);
+
+        current_PWM_right += PWM;
+
+        // Apply limits to the control variable
+        if (current_PWM_right > max_pwm) {
+            current_PWM_right = max_pwm;
+        } else if (current_PWM_right < 16500) {
+            current_PWM_right = 16500;
+        }
+
+        set_right_speed(current_PWM_right);
+        //printf("RIGHT PWM: %i\n", current_PWM_right);
+    }
 }
 
 void move_backward(){
@@ -153,12 +186,18 @@ void move_backward(){
 
 void turn_right(){
     set_direction_right();
-    set_left_speed(3);
-    vTaskDelay(950);
+    set_left_speed(15000);
+    if(right_ir() == 1)
+    {
+        set_left_speed(0);
+    }
 }
 
 void turn_left(){
     set_direction_left();
-    set_right_speed(3);
-    vTaskDelay(950);
+    set_right_speed(16500);
+    if(left_ir() == 1)
+    {
+        set_left_speed(0);
+    }
 }

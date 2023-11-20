@@ -10,3 +10,4 @@ void init_ir();
 void get_ir_value();
 bool left_ir();
 bool right_ir();
+bool front_ir();
