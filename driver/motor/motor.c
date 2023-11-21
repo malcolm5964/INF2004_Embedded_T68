@@ -32,12 +32,12 @@ void set_direction_right()
     gpio_put(N1, 0);
     gpio_put(N2, 1);    
     gpio_put(N3, 0);
-    gpio_put(N4, 0);
+    gpio_put(N4, 1);
 }
 
 void set_direction_left()
 {
-    gpio_put(N1, 0);
+    gpio_put(N1, 1);
     gpio_put(N2, 0);    
     gpio_put(N3, 1);
     gpio_put(N4, 0);
@@ -87,29 +87,20 @@ void init_left_motor(){
 
 
 int max_pwm = 50000; //MAx PWM = 50000
-double kp = 2;
-int16_t current_PWM_left;
-int16_t current_PWM_right;
+double kp = 2.5;
 
-void move_forward_left(int target_speed, int current_speed, int direction){
+int16_t PWM_left = 14000;
+int16_t PWM_right = 18000;
 
-    
-    if(direction == 0)
-    {
-        set_direction_forward();
-    }
-    if(direction == 1)
-    {
 
-        set_direction_back();
-    }
-
+void left_PID(int target_speed, int current_speed, int direction){
 
     //printf("LEFT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
 
     if(target_speed == 0)
     {
         set_left_speed(0);
+        PWM_left = 14000;
     }
     else
     {
@@ -121,60 +112,38 @@ void move_forward_left(int target_speed, int current_speed, int direction){
 
         int16_t PWM = (int16_t)(proportional);
 
-        current_PWM_left += PWM;
+        PWM_left += PWM;
 
-        // Apply limits to the control variable
-        if (current_PWM_left > max_pwm) {
-            current_PWM_left = max_pwm;
-        } else if (current_PWM_left < 13500) {
-            current_PWM_left = 13500;
-        }
-
-        set_left_speed(current_PWM_left);
-        //printf("LEFT PWM: %i\n", current_PWM_left);
+        set_left_speed(PWM_left);
+        printf("LEFT PWM: %i\n", PWM_left);
     }
         
 }
 
-void move_forward_right(int target_speed, int current_speed, int direction){
-
-    if(direction == 0)
-    {
-        set_direction_forward();
-    }
-    if(direction == 1)
-    {
-
-        set_direction_back();
-    }
+void right_PID(int target_speed, int current_speed, int direction){
 
     //printf("RIGHT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
 
     if(target_speed == 0)
     {
         set_right_speed(0);
+        PWM_right = 18000;
     }
     else
     {
         //Calculate error
         double error = target_speed - current_speed;
 
+
         //Calculate the Control Variable
         double proportional = kp * error;
 
         int16_t PWM = (int16_t)(proportional);
 
-        current_PWM_right += PWM;
+        PWM_right += PWM;
 
-        // Apply limits to the control variable
-        if (current_PWM_right > max_pwm) {
-            current_PWM_right = max_pwm;
-        } else if (current_PWM_right < 16500) {
-            current_PWM_right = 16500;
-        }
-
-        set_right_speed(current_PWM_right);
-        //printf("RIGHT PWM: %i\n", current_PWM_right);
+        set_right_speed(PWM_right);
+        printf("RIGHT PWM: %i\n", PWM_right);
     }
 }
 
@@ -185,17 +154,57 @@ void move_backward(){
 }
 
 void turn_right(){
+
+    float startHeading = headingPass;
+
+    printf("start heading: %f\n", headingPass);
+
+    float endingHeading  = startHeading + 90;
+
+
+
+    if(endingHeading > 360)
+    {
+        endingHeading = endingHeading - 360;
+    }
+    if(endingHeading < 0)
+    {
+        endingHeading = endingHeading + 360;
+    }
+
+    float endingHeadingLow = endingHeading - 1;
+    float endingHeadingHigh = endingHeading + 1
+    ;
+
+    printf("start heading: %f, end heading: %f\n", endingHeadingLow, endingHeadingHigh);
+
+    vTaskDelay(2000);
     set_direction_right();
     set_left_speed(15000);
-    if(right_ir() == 1)
+    set_right_speed(15000);
+
+    while (true)
     {
-        set_left_speed(0);
+        if((headingPass > endingHeadingLow) && (headingPass < endingHeadingHigh))
+        {
+            printf("Stop: %i\n", headingPass);
+            set_right_speed(0);
+            set_left_speed(0);
+        }
     }
+    //vTaskDelay(1400);
+    //if(right_ir() == 1)
+    //{
+    //    set_left_speed(0);
+    //}
 }
 
 void turn_left(){
     set_direction_left();
     set_right_speed(16500);
+
+
+
     if(left_ir() == 1)
     {
         set_left_speed(0);

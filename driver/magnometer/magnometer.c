@@ -1,8 +1,5 @@
 #include "magnometer.h"
 
-//Magnetometer
-const uint mag_VIN = 18;
-
 //i2c Pins
 const uint sda_pin = 16;
 const uint scl_pin = 17;
@@ -31,6 +28,9 @@ const uint8_t ACC_ADDRESS = 0x19;
 
 const uint8_t CTRL_REG1_ADDR = 0x20;
 const uint8_t CTRL_REG1_ADDR_value = 0x57;
+
+
+volatile float headingPass;
 
 typedef struct {
     int32_t x, y, z;
@@ -74,10 +74,6 @@ float vector_dot(const vector_float_t *a, const vector_int8_t *b) {
 
 void magnometer_init(){
     printf("magno init\n");
-    //Set VIN to 3.3v
-    gpio_init(mag_VIN);
-    gpio_set_dir(mag_VIN, GPIO_OUT);
-    gpio_put(mag_VIN, 1); 
 
     //Initialize I2C port at 400 kHz
     i2c_init(I2C_PORT, 400 * 1000);
@@ -144,13 +140,13 @@ float magnometer_read(){
         int16_t y_acc = (int16_t)((accData[3] << 8) | accData[2]) >> 4;
         int16_t z_acc = (int16_t)((accData[5] << 8) | accData[4]) >> 4;
 
-        printf("X: %i, Y: %i, Z: %i\n", x_acc, y_acc, z_acc);
+        //printf("X: %i, Y: %i, Z: %i\n", x_acc, y_acc, z_acc);
 
         int raw_xm = (int16_t)((xhm << 8) | xlm);
         int raw_ym = (int16_t)((yhm << 8) | ylm);
         int raw_zm = (int16_t)((zhm << 8) | zlm);
 
-        printf("X: %i, Y: %i, Z: %i\n", raw_xm, raw_ym, raw_zm);
+        //printf("X: %i, Y: %i, Z: %i\n", raw_xm, raw_ym, raw_zm);
 
         vector_int32_t temp_m = {raw_xm, raw_ym, raw_zm};
         vector_int8_t from = {0, 1, 0}; 
@@ -169,10 +165,16 @@ float magnometer_read(){
             heading += 360.0f;
         }
 
-        printf("Heading: %.2f degrees\n", heading);
+        headingPass = heading;
 
-        sleep_ms(1000);
+
+
+        //printf("Heading: %f degrees\n", heading);
+
+        //sleep_ms(1000);
     }
 
     return 1;
 }
+
+

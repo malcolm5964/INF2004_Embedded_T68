@@ -33,66 +33,68 @@ volatile int currentSpeedRight;
 
 void move(int distance, int direction){
 
-    if(direction == 0)
-    {
+    if(direction == 0){
         set_direction_forward();
     }
-    if(direction == 1)
-    {
+    if(direction == 1){
         set_direction_back();
     }
 
-    set_left_speed(13500);
-    set_right_speed(16500);
+    double startHeading = headingPass;
+    double lowHeading = headingPass - 1;
+    double highHeading = headingPass + 1;
 
-    int leftTargetSpeed = 50;
-    int rightTargetSpeed = 50;
+    printf("test\n");
 
+    set_left_speed(14000);
+    set_right_speed(18000);
+
+
+    int leftDetect_change;
+    int rightDetect_change;
     absolute_time_t leftPreviousTime = get_absolute_time();
     absolute_time_t rightPreviousTime = get_absolute_time();
-
-    uint8_t leftBlackToWhite = 0;
-    uint8_t rightBlackToWhite = 0;
-
-    uint8_t leftBlackDetect;
-    uint8_t rightBlackDetect;
 
     int leftDistanceMoved = 0;
     int rightDistanceMoved = 0;
 
     while(true)
     {
-        printf("Wheel Econder raw: %i\n", gpio_get(WHEEL_EN_LEFT_OUT));
-        //PWM for LEFT wheel
-        //if((absolute_time_diff_us(leftPreviousTime, get_absolute_time()) > 1000000))
-        //{
-        //    currentSpeedLeft = 0;
-        //    move_forward_left(leftTargetSpeed, currentSpeedLeft);
-        //}
+        printf("PWM: %i\n", PWM_right);
+        
+        //QUICK FIX
+        if(!((headingPass > lowHeading) && (headingPass < highHeading)))
+        {
+            if(headingPass < lowHeading)
+            {
+                PWM_right -= 100;
+                set_right_speed(PWM_right);
+            }
+            if(headingPass > highHeading)
+            {
+                PWM_right += 100;
+                set_right_speed(PWM_right);
+            }
+        }
 
-        //Detect change 
+
+        //Left Wheel
         if(gpio_get(WHEEL_EN_LEFT_OUT) == 1)
         {
-            
-            leftBlackDetect = 1;
-        }
-        if((gpio_get(WHEEL_EN_LEFT_OUT) == 0) && (leftBlackDetect == 1))
-        {
-            leftBlackDetect = 0;
-            leftBlackToWhite += 1; 
+
+            leftDetect_change = 1;
         }
         //Calculate speed,distance and PWM
-        if (leftBlackToWhite == 2)
+        if ((gpio_get(WHEEL_EN_LEFT_OUT) == 0) && (leftDetect_change == 1))
         {
-            leftBlackToWhite = 0;
-            leftBlackDetect = 0;
+            leftDetect_change = 0;
 
             //Add distance (Circumference = 20.4cm)
             leftDistanceMoved += 1;
             if(leftDistanceMoved >= distance)
             {
                 //printf("moved %icm\n", distance);
-                leftTargetSpeed = 0;
+                set_left_speed(0);
             }
 
             absolute_time_t current_time = get_absolute_time();
@@ -103,37 +105,28 @@ void move(int distance, int direction){
 
             currentSpeedLeft = speed;
             printf("Wheel Speed left: %imm/s\n", speed);
-            move_forward_left(leftTargetSpeed, currentSpeedLeft, direction);
+            if(leftDistanceMoved > 1 && leftDistanceMoved < distance)
+            {
+                //left_PID(leftTargetSpeed, currentSpeedLeft, direction);
+            }
             leftPreviousTime = current_time;
         }
 
-
-        //PWM for RIGHT wheel
-        //if((absolute_time_diff_us(rightPreviousTime, get_absolute_time()) > 1000000))
-        //{
-        //    currentSpeedRight = 0;
-        //    move_forward_right(rightTargetSpeed, currentSpeedRight);
-        //}
+        //Right Wheel
         if (gpio_get(WHEEL_EN_RIGHT_OUT) == 1)
         {
-            rightBlackDetect = 1;
+            rightDetect_change = 1;
         }
-        if((gpio_get(WHEEL_EN_RIGHT_OUT) == 0) && (rightBlackDetect == 1))
+        if ((gpio_get(WHEEL_EN_RIGHT_OUT) == 0) && (rightDetect_change == 1))
         {
-            rightBlackDetect = 0;
-            rightBlackToWhite += 1; 
-        }
-        if (rightBlackToWhite == 2)
-        {
-            rightBlackToWhite = 0;
-            rightBlackDetect = 0;
+            rightDetect_change = 0;
 
             //Add distance (Circumference = 20.4cm)
             rightDistanceMoved += 1;
             if(rightDistanceMoved >= distance)
             {
                 //printf("moved %icm\n", distance);
-                rightTargetSpeed = 0;
+                set_right_speed(0);
             }
 
             absolute_time_t current_time = get_absolute_time();
@@ -144,14 +137,17 @@ void move(int distance, int direction){
 
             currentSpeedRight = speed;
             printf("Wheel Speed right: %imm/s\n", speed);
-            move_forward_right(rightTargetSpeed, currentSpeedRight, direction);
+            if(rightDistanceMoved > 1 && rightDistanceMoved < distance)
+            {
+                right_PID(currentSpeedLeft, currentSpeedRight, direction);
+            }
             rightPreviousTime = current_time;
         }
 
 
         if(leftDistanceMoved >= distance && rightDistanceMoved >= distance)
         {
-            printf("moved %icm\n", distance);
+            printf("moved %icm\n", distance); 
             break;
         }
     }

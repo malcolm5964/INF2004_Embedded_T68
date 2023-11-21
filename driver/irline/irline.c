@@ -10,6 +10,7 @@ const uint LEFT_IR_SENSOR_GND = 22;
 
 const uint COLOUR_THRESHOLD = 2000;
 const uint RIGHT_COLOUR_THRESHOLD = 3000;
+const uint LEFT_COLOUR_THRESHOLD = 3000;
 
 volatile uint32_t left_ir_raw;
 volatile uint32_t right_ir_raw;
@@ -47,7 +48,7 @@ void get_ir_value()
 {
     while (true)
     {
-        vTaskDelay(1000);
+        //vTaskDelay(1000);
         adc_select_input(0);
         left_ir_raw = adc_read();
 
@@ -59,6 +60,7 @@ void get_ir_value()
 
         //printf("center: %d\n", center_ir_raw);
         //printf("right: %d\n", right_ir_raw);
+        //printf("left: %d\n", left_ir_raw);
     }
 }
 

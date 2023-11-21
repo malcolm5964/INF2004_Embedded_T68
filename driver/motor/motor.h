@@ -18,6 +18,8 @@ extern const uint N4;
 extern uint slice_num_right;
 extern uint slice_num_left;
 
+extern int16_t PWM_right;
+
 void init_right_motor();
 void init_left_motor();
 
@@ -30,8 +32,8 @@ void stop();
 void set_left_speed(int level);
 void set_right_speed(int level);
 
-void move_forward_left(int target_speed, int current_speed, int direction);
-void move_forward_right(int target_speed, int current_speed, int direction);
+void left_PID(int target_speed, int current_speed, int direction);
+void right_PID(int target_speed, int current_speed, int direction);
 
 void move_backward();
 void turn_left();

@@ -52,6 +52,8 @@ extern int CTRL_REG6_A_value;
 
 extern const uint8_t ACC_X_REG; // Address for retrieveing
 
+extern volatile float headingPass;
+
 
 int reg_write(i2c_inst_t *i2c, 
                 const uint addr, 
@@ -70,4 +72,5 @@ void magnometer_init();
 float magnometer_read();
 
 void accelerator_read();
+
 

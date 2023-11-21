@@ -30,22 +30,34 @@ const char WIFI_PASSWORD[] = "koh103325";
 
 void mapping_task(__unused void *params)
 {
-    vTaskDelay(10000);
+    vTaskDelay(5000);
     initWheelEncoderLeft();
     initWheelEncoderRight();
     init_right_motor();
     init_left_motor();
-    vTaskDelay(5000);
+    vTaskDelay(3000);
+    printf("moving");
+    //turn_right();
+    move(19, 0);
+    move(19, 0);
+    move(19, 0);
+    //move(19, 0);
     //initGraph();
-    move(5, 0);
 }
 
 
 void irline_task(__unused void *params)
 {
-    vTaskDelay(10000);
+    vTaskDelay(5000);
     init_ir();
     get_ir_value();
+}
+
+void magnometer_task(__unused void *params)
+{
+    vTaskDelay(5000);
+    magnometer_init();
+    magnometer_read();
 }
 
 
@@ -86,6 +98,9 @@ void vLaunch(void)
     
     TaskHandle_t irline;
     xTaskCreate(irline_task, "Irline", configMINIMAL_STACK_SIZE, NULL, 3, &irline);
+
+    //TaskHandle_t magnometer;
+    //xTaskCreate(magnometer_task, "Magnometer", configMINIMAL_STACK_SIZE, NULL, 3, &magnometer);
 
     vTaskStartScheduler();
 }
