@@ -146,9 +146,32 @@ float magnometer_read(){
         int raw_ym = (int16_t)((yhm << 8) | ylm);
         int raw_zm = (int16_t)((zhm << 8) | zlm);
 
+        //Calibration 
+        //static int16_t minX = 0, maxX = 0, minY = 0, maxY = 0;
+        //if (raw_xm < minX) minX = raw_xm;
+        //if (raw_xm > maxX) maxX = raw_xm;
+        //if (raw_ym < minY) minY = raw_ym;
+        //if (raw_ym > maxY) maxY = raw_ym;
+        //printf("minX: %d maxX: %d minY: %d maxY: %d\n", minX, maxX, minY, maxY);
+        int16_t minX = -356;
+        int16_t maxX = 536;
+        int16_t minY = -652;
+        int16_t maxY = 248;
+
+        //int16_t xOffset = (minX + maxX) / 2;
+        //int16_t yOffset = (minY + maxY) / 2;
+//
+//
+        //int16_t x_calibrated = raw_xm - xOffset;
+        //int16_t y_calibrated = raw_ym - yOffset;
+
         //printf("X: %i, Y: %i, Z: %i\n", raw_xm, raw_ym, raw_zm);
 
         vector_int32_t temp_m = {raw_xm, raw_ym, raw_zm};
+
+        temp_m.x -= (minX + maxX) / 2;
+        temp_m.y -= (minY + maxY) / 2;
+
         vector_int8_t from = {0, 1, 0}; 
         vector_int16_t acc = {x_acc,y_acc,z_acc};
 
@@ -169,7 +192,7 @@ float magnometer_read(){
 
 
 
-        //printf("Heading: %f degrees\n", heading);
+        printf("Heading: %f degrees\n", heading);
 
         //sleep_ms(1000);
     }

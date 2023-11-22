@@ -19,6 +19,7 @@ extern uint slice_num_right;
 extern uint slice_num_left;
 
 extern volatile int16_t PWM_right;
+extern volatile int16_t PWM_left;
 
 void init_right_motor();
 void init_left_motor();

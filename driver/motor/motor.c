@@ -87,10 +87,10 @@ void init_left_motor(){
 
 
 int max_pwm = 50000; //MAx PWM = 50000
-double kp = 2.5;
+double kp = 5;
 
-volatile int16_t PWM_left = 14000;
-volatile int16_t PWM_right = 18000;
+volatile int16_t PWM_left = 18500;
+volatile int16_t PWM_right = 18500;
 
 
 void left_PID(int target_speed, int current_speed, int direction){
@@ -100,7 +100,7 @@ void left_PID(int target_speed, int current_speed, int direction){
     if(target_speed == 0)
     {
         set_left_speed(0);
-        PWM_left = 14000;
+        PWM_left = 18500;
     }
     else
     {
@@ -127,7 +127,7 @@ void right_PID(int target_speed, int current_speed, int direction){
     if(target_speed == 0)
     {
         set_right_speed(0);
-        PWM_right = 18000;
+        PWM_right = 18500;
     }
     else
     {
@@ -162,7 +162,6 @@ void turn_right(){
     float endingHeading  = startHeading + 90;
 
 
-
     if(endingHeading > 360)
     {
         endingHeading = endingHeading - 360;
@@ -180,8 +179,8 @@ void turn_right(){
 
     vTaskDelay(2000);
     set_direction_right();
-    set_left_speed(15000);
-    set_right_speed(15000);
+    set_left_speed(18500);
+    set_right_speed(18500);
 
     while (true)
     {

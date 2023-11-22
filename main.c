@@ -38,11 +38,13 @@ void mapping_task(__unused void *params)
     init_left_motor();
     vTaskDelay(3000);
     //turn_right();
+    move(19, 0);
+    move(19, 0);
     move(10, 0);
-    move(19, 0);
-    move(19, 0);
     //move(19, 0);
-    //turn_right();
+    stop();
+    vTaskDelay(1000);
+    turn_right();
     //initGraph();
 }
 
@@ -119,8 +121,8 @@ void vLaunch(void)
     TaskHandle_t webServer;
     xTaskCreate(webServer_task, "WebServer", configMINIMAL_STACK_SIZE, NULL, 3, &webServer);
 
-    //TaskHandle_t mapping;
-    //xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
+    TaskHandle_t mapping;
+    xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
     
     TaskHandle_t irline;
     xTaskCreate(irline_task, "Irline", configMINIMAL_STACK_SIZE, NULL, 3, &irline);
@@ -128,11 +130,11 @@ void vLaunch(void)
     TaskHandle_t magnometer;
     xTaskCreate(magnometer_task, "Magnometer", configMINIMAL_STACK_SIZE, NULL, 3, &magnometer);
 
-    TaskHandle_t shootUltrasonicSensorTask;
-    xTaskCreate(shootUltrasonic_task, "ShootUltrasonicSensorThread", configMINIMAL_STACK_SIZE, NULL, 3, &shootUltrasonicSensorTask);
-
-    TaskHandle_t interruptTask;
-    xTaskCreate(interrupt_task, "InterruptThread", configMINIMAL_STACK_SIZE, NULL, 3, &interruptTask);
+    //TaskHandle_t shootUltrasonicSensorTask;
+    //xTaskCreate(shootUltrasonic_task, "ShootUltrasonicSensorThread", configMINIMAL_STACK_SIZE, NULL, 3, &shootUltrasonicSensorTask);
+//
+    //TaskHandle_t interruptTask;
+    //xTaskCreate(interrupt_task, "InterruptThread", configMINIMAL_STACK_SIZE, NULL, 3, &interruptTask);
 
     vTaskStartScheduler();
 }
