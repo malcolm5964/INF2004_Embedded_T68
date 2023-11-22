@@ -21,6 +21,7 @@
 #include "driver/wheelEncoder/wheelEncoder.h"
 #include "driver/irline/irline.h"
 #include "driver/mapping/mapping.h"
+#include "driver/ultrasonic/ultrasonic.h"
 
 
 // WIFI Credentials - take care if pushing to github!
@@ -36,12 +37,12 @@ void mapping_task(__unused void *params)
     init_right_motor();
     init_left_motor();
     vTaskDelay(3000);
-    printf("moving");
     //turn_right();
-    move(19, 0);
+    move(10, 0);
     move(19, 0);
     move(19, 0);
     //move(19, 0);
+    //turn_right();
     //initGraph();
 }
 
@@ -88,19 +89,50 @@ void webServer_task(__unused void *params){
 
 
 
+void gpio_callback(uint gpio, uint32_t events) {
+    if (gpio == UltrasonicEcho) {
+        getDistanceUltrasonic();
+    }
+}
+
+void interrupt_task(__unused void *params) {
+
+    gpio_set_irq_enabled_with_callback(UltrasonicEcho, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
+
+    while (true) {
+        tight_loop_contents();
+    }
+}
+
+void shootUltrasonic_task(__unused void *params){
+
+    initUltrasonic();
+    shootUltrasonic();
+
+}
+
+
+
+
 void vLaunch(void)
 {
     TaskHandle_t webServer;
     xTaskCreate(webServer_task, "WebServer", configMINIMAL_STACK_SIZE, NULL, 3, &webServer);
 
-    TaskHandle_t mapping;
-    xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
+    //TaskHandle_t mapping;
+    //xTaskCreate(mapping_task, "MappingMap", configMINIMAL_STACK_SIZE, NULL, 3, &mapping);
     
     TaskHandle_t irline;
     xTaskCreate(irline_task, "Irline", configMINIMAL_STACK_SIZE, NULL, 3, &irline);
 
-    //TaskHandle_t magnometer;
-    //xTaskCreate(magnometer_task, "Magnometer", configMINIMAL_STACK_SIZE, NULL, 3, &magnometer);
+    TaskHandle_t magnometer;
+    xTaskCreate(magnometer_task, "Magnometer", configMINIMAL_STACK_SIZE, NULL, 3, &magnometer);
+
+    TaskHandle_t shootUltrasonicSensorTask;
+    xTaskCreate(shootUltrasonic_task, "ShootUltrasonicSensorThread", configMINIMAL_STACK_SIZE, NULL, 3, &shootUltrasonicSensorTask);
+
+    TaskHandle_t interruptTask;
+    xTaskCreate(interrupt_task, "InterruptThread", configMINIMAL_STACK_SIZE, NULL, 3, &interruptTask);
 
     vTaskStartScheduler();
 }

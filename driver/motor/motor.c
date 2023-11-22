@@ -89,8 +89,8 @@ void init_left_motor(){
 int max_pwm = 50000; //MAx PWM = 50000
 double kp = 2.5;
 
-int16_t PWM_left = 14000;
-int16_t PWM_right = 18000;
+volatile int16_t PWM_left = 14000;
+volatile int16_t PWM_right = 18000;
 
 
 void left_PID(int target_speed, int current_speed, int direction){

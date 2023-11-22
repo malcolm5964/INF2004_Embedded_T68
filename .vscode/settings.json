@@ -38,7 +38,8 @@
         "gpio.h": "c",
         "lwipopts_examples_common.h": "c",
         "magnometer.h": "c",
-        "irline.h": "c"
+        "irline.h": "c",
+        "ultrasonic.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

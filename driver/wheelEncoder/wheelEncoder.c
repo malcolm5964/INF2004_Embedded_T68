@@ -41,17 +41,17 @@ void move(int distance, int direction){
     }
 
     double startHeading = headingPass;
-    double lowHeading = headingPass - 1;
-    double highHeading = headingPass + 1;
+    double lowHeading = headingPass - 4;
+    double highHeading = headingPass + 4;
 
-    printf("test\n");
+    printf("Range : %f to %f\n", lowHeading, highHeading);
 
     set_left_speed(14000);
     set_right_speed(18000);
 
-
     int leftDetect_change;
     int rightDetect_change;
+
     absolute_time_t leftPreviousTime = get_absolute_time();
     absolute_time_t rightPreviousTime = get_absolute_time();
 
@@ -60,22 +60,40 @@ void move(int distance, int direction){
 
     while(true)
     {
-        printf("PWM: %i\n", PWM_right);
+        //printf("PWM: %i\n", PWM_right);
+        printf("Current headint %f\n", headingPass);
+        //Magnometer HELP
+        //if(!((headingPass > lowHeading) && (headingPass < highHeading)))
+        //{
+        //    if(headingPass < lowHeading)
+        //    {
+        //        PWM_right -= 1;
+        //        set_right_speed(PWM_right);
+        //        printf("reducing right\n");
+        //    }
+        //    if(headingPass > highHeading)
+        //    {
+        //        PWM_right += 1;
+        //        set_right_speed(PWM_right);
+        //        printf("increasing right\n");
+        //    }
         
-        //QUICK FIX
-        if(!((headingPass > lowHeading) && (headingPass < highHeading)))
+        //BLACK LINE HELP
+        //0 = white
+        if(left_ir() == 0)
         {
-            if(headingPass < lowHeading)
-            {
-                PWM_right -= 100;
-                set_right_speed(PWM_right);
-            }
-            if(headingPass > highHeading)
-            {
-                PWM_right += 100;
-                set_right_speed(PWM_right);
-            }
+            PWM_right = PWM_right + 2;
+            printf("LEFT on white %i\n", PWM_right);
+            set_right_speed(PWM_right);
         }
+
+        if(right_ir() == 0)
+        {
+            PWM_right = PWM_right - 2;
+            printf("RIGHT on White %i\n", PWM_right);
+            set_right_speed(PWM_right);
+        }
+        
 
 
         //Left Wheel

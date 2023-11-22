@@ -8,9 +8,9 @@ const uint LEFT_IR_SENSOR_GND = 22;
 //CENTER_IR_PIN_GND = PIN 33
 //RIGHT_IR_PIN_GND = PIN 28
 
-const uint COLOUR_THRESHOLD = 2000;
-const uint RIGHT_COLOUR_THRESHOLD = 3000;
-const uint LEFT_COLOUR_THRESHOLD = 3000;
+const uint CENTER_COLOUR_THRESHOLD = 2000;
+const uint RIGHT_COLOUR_THRESHOLD = 1000;
+const uint LEFT_COLOUR_THRESHOLD = 1000;
 
 volatile uint32_t left_ir_raw;
 volatile uint32_t right_ir_raw;
@@ -59,8 +59,8 @@ void get_ir_value()
         center_ir_raw = adc_read();
 
         //printf("center: %d\n", center_ir_raw);
-        //printf("right: %d\n", right_ir_raw);
-        //printf("left: %d\n", left_ir_raw);
+        printf("right: %d\n", right_ir_raw);
+        printf("left: %d\n", left_ir_raw);
     }
 }
 
@@ -69,8 +69,7 @@ bool left_ir()
     adc_select_input(0);
     left_ir_raw = adc_read();
 
-    //return left_ir_raw > COLOUR_THRESHOLD;
-    return 1;
+    return left_ir_raw > LEFT_COLOUR_THRESHOLD;
 }
 
 bool right_ir()
@@ -78,8 +77,7 @@ bool right_ir()
     adc_select_input(1); 
     right_ir_raw = adc_read();
 
-    //return right_ir_raw > RIGHT_COLOUR_THRESHOLD;
-    return 1;
+    return right_ir_raw > RIGHT_COLOUR_THRESHOLD;
 }
 
 bool front_ir()
@@ -87,5 +85,5 @@ bool front_ir()
     adc_select_input(2); 
     center_ir_raw = adc_read();
 
-    return center_ir_raw > COLOUR_THRESHOLD;
+    return center_ir_raw > CENTER_COLOUR_THRESHOLD;
 }

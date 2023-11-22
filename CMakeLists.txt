@@ -25,6 +25,7 @@ add_executable(${PROGRAM_NAME}
     driver/wheelEncoder/wheelEncoder.c
     driver/irline/irline.c
     driver/mapping/mapping.c
+    driver/ultrasonic/ultrasonic.c
 )
 
 target_include_directories(${PROGRAM_NAME} PRIVATE
