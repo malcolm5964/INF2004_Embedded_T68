@@ -1,5 +1,11 @@
 # Data Flow Diagram
-![Embedded Diagram](https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/abb9e92c-4d7c-4c10-8430-5ac06be7d3d3)
+![Embedded Diagram](https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/89ea4c7e-99b6-40d1-9032-8a09c578d9ef)
+- Ultrasonic, Magnometer, Wheel Encoder and IR Sensor only needs to get data for Mapping.c and Barcode.c to perform logic and calculations.
+- Mapping.c will return which direction and distance the car should move next with the Heading Degree data and the IR Sensor data to detect if there is a wall or not.
+- Barcode.c will decode the data gathered from IR Sensor to an Alphabet
+- Wifi Server will request for the Map Data and decoded barcode information and display it with the help of ssi and cgi handlers.
+
+
 
 # Flow Chart
 
