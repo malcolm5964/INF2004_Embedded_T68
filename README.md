@@ -5,8 +5,8 @@
 
 1. Motor Controller
 <p align="center">
-<img width="141" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/69d18d03-363d-4fbd-9aa3-d35b0db7920d">
-<p>Flow of motor controller and actions to make the car straight</p>
+  <img width="141" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/69d18d03-363d-4fbd-9aa3-d35b0db7920d">
+  <p>Flow of motor controller and actions to make the car straight</p>
 </p>
 
 3. Wheel Encoder
