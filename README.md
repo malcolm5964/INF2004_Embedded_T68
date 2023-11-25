@@ -3,7 +3,7 @@
 - Ultrasonic, Magnometer, Wheel Encoder and IR Sensor only needs to get data for Mapping.c and Barcode.c to perform logic and calculations.
 - Mapping.c will return which direction and distance the car should move next with the Heading Degree data and the IR Sensor data to detect if there is a wall or not.
 - Motor.c requires information to decide the car movement
-  - Information from Mapping.c will be pass to decide which direction the wheel should turn.
+  - Information from Mapping.c will be pass to decide which direction the wheel should turn and distance to move.
   - Information from wheelEncoder.c to decide when to stop if the distance is reach or control the speed(PID)
   - Information from Magnometer.c to decide when to stop turning.
 - Barcode.c will decode the data gathered from IR Sensor to an Alphabet
