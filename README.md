@@ -1,7 +1,7 @@
 # Block Diagram
 ![Embedded Diagram (1)](https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/462bd128-cb81-4fe6-9310-f2eafe0ffd90)
-*Blue Rectangle = Hardware Compoenents
-*Green Circle = Software Components
+-Blue Rectangle = Hardware Compoenents
+-Green Circle = Software Components
 
 # Data Flow Diagram
 ![Embedded Diagram](https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/89ea4c7e-99b6-40d1-9032-8a09c578d9ef)
