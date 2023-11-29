@@ -74,7 +74,86 @@ Position car at vertex 2 and run CheckVertex().
 5. Repeat for all vertices, Car will return back to start
 <img width="826" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/d3e741af-9717-4eac-8c77-cc880b222354">
 
+# Maze Drawing
+Creating the map as HTML table with borders to be pass into the ssi handler
+```
+void drawMap(struct Graph* graph){
+  uint8_t number = 1;
+  const int bufferSize = 1024;
 
+  mazeHTML1 = (char*)malloc(bufferSize * sizeof(char));
+  mazeHTML1[0] = '\0';
+  mazeHTML2 = (char*)malloc(bufferSize * sizeof(char));
+  mazeHTML2[0] = '\0';
+  mazeHTML3 = (char*)malloc(bufferSize * sizeof(char));
+  mazeHTML3[0] = '\0';
+  mazeHTML4 = (char*)malloc(bufferSize * sizeof(char));
+  mazeHTML4[0] = '\0';
+  
 
+  //Row Level HTML
+  for (int j = 0; j < gridWidth; j++) {
+
+    int startHead = 1 + gridWidth * j;
+
+    struct node* adjList = graph->adjLists[startHead];
+    struct node* temp = adjList;
+
+    if(temp != NULL) {
+      //Column Level HTML
+      if(number == 1){
+        mazeHTML = mazeHTML1;
+      }
+      else if(number == 2){
+        mazeHTML = mazeHTML2;
+      }
+      else if(number == 3){
+        mazeHTML = mazeHTML3;
+      }
+      else if(number == 4){
+        mazeHTML = mazeHTML4;
+      }
+      snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "<tr>");
+
+        for (int i = startHead; i < startHead+6; i++) {
+          snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "<td class='");
+          struct node* adjList = graph->adjLists[i];
+          struct node* temp = adjList;
+      
+          while(temp != NULL) {
+            int connectedVertex = temp->vertex;
+
+            //Add right
+            if(i + 1 == connectedVertex) {
+              snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "right ");
+            }
+            //Add left
+            if(i - 1 == connectedVertex) {
+              snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "left ");
+            }
+            //Add top
+            if(i - 6 == connectedVertex || i - 6 + 36 == connectedVertex) {
+              snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "top ");
+            }
+            //Add bottom
+            if(i + 6 == connectedVertex || i + 6 - 36 == connectedVertex) {
+              snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "bottom ");
+            }
+            temp = temp->next;
+          }
+        snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "'></td>");
+        }
+
+        snprintf(mazeHTML + strlen(mazeHTML), bufferSize - strlen(mazeHTML), "</tr>");
+        printf("\nHTML %s\n", mazeHTML);
+        number++;
+    }
+    else {
+      continue;
+    }
+
+  }
+}
+```
 
 
