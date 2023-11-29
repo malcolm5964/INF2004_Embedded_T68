@@ -50,21 +50,21 @@ Vertex 1:<br>
 Vertex 2:<br>
 Vertex 3:<br>
 Vertex 4:<br>
-Vertex 5:
+Vertex 5:<br>
 .
 .
 .
-- Vertex 36:
+Vertex 36:
 
 2. Check Vertex 1
 <img width="887" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/f66ce54b-d37c-4671-ba49-763be73d24e4">
 
 
-3. Store the wall readings into the adjacency list
-Vertex 0: None
-Vertex 1: 2 -> 7 -> 31
-Vertex 2: 1
-Vertex 7: 1
+3. Store the wall readings into the adjacency list<br>
+Vertex 0: None<br>
+Vertex 1: 2 -> 7 -> 31<br>
+Vertex 2: 1<br>
+Vertex 7: 1<br>
 Vertex 31: 1
 
 4. Go through adjacency list to find next vertex to check
