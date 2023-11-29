@@ -43,6 +43,38 @@
 <p>Flow of ultrasonic on how it detects an obstacle</p>
 </p>
 
+# Mapping Algorithm
+
+1. Create an Adjacency for each Vertex to store vertices connected to it.
+Vertex 1:
+Vertex 2:
+Vertex 3:
+Vertex 4:
+Vertex 5:
+.
+.
+.
+Vertex 36:
+
+2. Check Vertex 1
+<img width="887" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/f66ce54b-d37c-4671-ba49-763be73d24e4">
+
+
+3. Store the wall readings into the adjacency list
+Vertex 0: None
+Vertex 1: 2 -> 7 -> 31
+Vertex 2: 1
+Vertex 7: 1
+Vertex 31: 1
+
+4. Go through adjacency list to find next vertex to check
+Next vertex is 2.
+Position car at vertex 2 and run CheckVertex().
+
+5. Repeat for all vertices, Car will return back to start
+<img width="826" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/d3e741af-9717-4eac-8c77-cc880b222354">
+
+
 
 
 
