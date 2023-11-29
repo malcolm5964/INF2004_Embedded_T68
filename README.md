@@ -45,16 +45,16 @@
 
 # Mapping Algorithm
 
-1. Create an Adjacency for each Vertex to store vertices connected to it.
-Vertex 1:
-Vertex 2:
-Vertex 3:
-Vertex 4:
-Vertex 5:
+1. Create an Adjacency List for each Vertex to store vertices connected to it.
+- Vertex 1:
+- Vertex 2:
+- Vertex 3:
+- Vertex 4:
+- Vertex 5:
 .
 .
 .
-Vertex 36:
+- Vertex 36:
 
 2. Check Vertex 1
 <img width="887" alt="image" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/f66ce54b-d37c-4671-ba49-763be73d24e4">
