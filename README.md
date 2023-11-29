@@ -45,7 +45,7 @@
 
 # Mapping Algorithm
 
-1. Create an Adjacency List for each Vertex to store vertices connected to it.
+1. Create an Adjacency List for each Vertex to store vertices connected to it.<br>
 Vertex 1:<br>
 Vertex 2:<br>
 Vertex 3:<br>
