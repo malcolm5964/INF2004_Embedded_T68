@@ -53,7 +53,7 @@ Vertex 4:<br>
 Vertex 5:<br>
 .
 .
-.
+.<br>
 Vertex 36:
 
 2. Check Vertex 1
