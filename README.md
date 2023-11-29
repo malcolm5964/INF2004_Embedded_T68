@@ -156,4 +156,135 @@ void drawMap(struct Graph* graph){
 }
 ```
 
+# Finding Shortest Path
+Use BFS with a prev list to track which vertex connects to which 
+```
+//QUEUE FUNCTIONS
+// Create a queue
+struct queue* createQueue() {
+  struct queue* q = malloc(sizeof(struct queue));
+  q->front = -1;
+  q->rear = -1;
+  return q;
+}
 
+// Check if the queue is empty
+int isEmpty(struct queue* q) {
+  if (q->rear == -1)
+    return 1;
+  else
+    return 0;
+}
+
+// Adding elements into queue
+void enqueue(struct queue* q, int value) {
+  if (q->rear == SIZE - 1)
+    printf("\nQueue is Full!!");
+  else {
+    if (q->front == -1)
+      q->front = 0;
+    q->rear++;
+    q->items[q->rear] = value;
+  }
+}
+
+// Removing elements from queue
+int dequeue(struct queue* q) {
+  int item;
+  if (isEmpty(q)) {
+    printf("Queue is empty");
+    item = -1;
+  } else {
+    item = q->items[q->front];
+    q->front++;
+    if (q->front > q->rear) {
+      //printf("Resetting queue ");
+      q->front = q->rear = -1;
+    }
+  }
+  return item;
+}
+
+// Print the queue
+void printQueue(struct queue* q) {
+  int i = q->front;
+
+  if (isEmpty(q)) {
+    printf("Queue is empty");
+  } else {
+    printf("\nQueue contains \n");
+    for (i = q->front; i < q->rear + 1; i++) {
+      printf("%d \n", q->items[i]);
+    }
+  }
+}
+
+
+
+int bfs(struct Graph* graph, int start, int end, int prev[]) {
+  struct queue* q = createQueue();
+
+  int visited[36];
+
+  for (int i = 0; i < 37; i++) {
+    visited[i] = 0;
+    prev[i] = -1;
+  }
+
+  visited[start] = 1;
+
+  enqueue(q, start);
+
+  while (!isEmpty(q)) {
+    
+    int current = dequeue(q);
+    struct node* temp = graph->adjLists[current];
+
+    while(temp) {
+      int adjVertex = temp->vertex;
+
+      //Check if visited
+      if (visited[adjVertex] == 0) {
+        visited[adjVertex] = 1;
+
+        prev[adjVertex] = current;
+
+        enqueue(q, adjVertex);
+
+        if (current == end) {
+          return 1;
+        }
+      }
+      temp = temp->next;
+    }
+  }
+  return 0;
+}
+
+
+
+// BFS algorithm
+void shortestPath(struct Graph* graph, int start, int end) {
+  int prev[36];
+
+  if(!bfs(graph, start, end, prev)) {
+    printf("Not connected to end");
+    return;
+  }
+
+  printf("\nFinding Shortest Path");
+  
+  struct queue* shortestPath = createQueue();
+
+  int prevVertex = end;
+  
+  enqueue(shortestPath, prevVertex);
+
+  while(prev[prevVertex] != -1) {
+    enqueue(shortestPath, prev[prevVertex]);
+    prevVertex = prev[prevVertex];
+  }
+
+  printQueue(shortestPath);
+}
+```
