@@ -46,11 +46,11 @@
 # Mapping Algorithm
 
 1. Create an Adjacency List for each Vertex to store vertices connected to it.
-- Vertex 1:
-- Vertex 2:
-- Vertex 3:
-- Vertex 4:
-- Vertex 5:
+Vertex 1:<br>
+Vertex 2:<br>
+Vertex 3:<br>
+Vertex 4:<br>
+Vertex 5:
 .
 .
 .
