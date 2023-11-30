@@ -1,9 +1,12 @@
 #include <stdio.h>
 //#include "pico/stdlib.h"
 #include <stdlib.h>
+#include <string.h>
 
 #include "../wheelEncoder/wheelEncoder.h"
 #include "../irline/irline.h"
+
+#define SIZE 40
 
 struct node {
   int vertex;
@@ -19,4 +22,15 @@ struct Graph {
   struct node** adjLists;
 };
 
+struct queue {
+  int items[SIZE];
+  int front;
+  int rear;
+};
+
 void initGraph();
+
+extern char *mazeHTML1;
+extern char *mazeHTML2;
+extern char *mazeHTML3;
+extern char *mazeHTML4;

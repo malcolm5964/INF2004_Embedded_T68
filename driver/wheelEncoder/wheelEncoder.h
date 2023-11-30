@@ -24,3 +24,4 @@ uint64_t measureSpeedLeft(int distance);
 uint64_t measureSpeedRight();
 
 void move(int distance, int direction);
+void moveBack(int distance); 

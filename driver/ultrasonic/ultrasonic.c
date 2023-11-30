@@ -1,37 +1,35 @@
+#include <stdio.h>
 #include "ultrasonic.h"
+#include "hardware/gpio.h"
+#include "pico/stdlib.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
+// Global variables declaration for ultrasonic measurements
 uint64_t width;
 int successful_pulse;
 absolute_time_t start_time;
 absolute_time_t end_time;
-uint final_result = -1;
+uint final_result = -1;  // Initialize final result with an error value
 
-void initUltrasonic(){
+// Function to initialize ultrasonic sensor GPIO pins
+void initUltrasonic(void *params) {
+    gpio_init(ULTRASONIC_ECHO);
+    gpio_init(ULTRASONIC_TRIG);
 
-    gpio_init(UltrasonicEcho);
-    gpio_init(UltrasonicTrig);
-    
-    gpio_set_dir(UltrasonicEcho, GPIO_IN);
-    gpio_set_dir(UltrasonicTrig, GPIO_OUT);
+    gpio_set_dir(ULTRASONIC_ECHO, GPIO_IN);
+    gpio_set_dir(ULTRASONIC_TRIG, GPIO_OUT);
 }
 
-void pulseUltrasonic(){
-    gpio_put(UltrasonicTrig, 1);
+// Function to trigger the ultrasonic sensor
+void pulseUltrasonic(void *params) {
+    gpio_put(ULTRASONIC_TRIG, 1);
     vTaskDelay(1);  // Add a brief delay for the ultrasonic pulse
-    gpio_put(UltrasonicTrig, 0);
+    gpio_put(ULTRASONIC_TRIG, 0);
 }
 
-void shootUltrasonic(){
-    while(1){
-        vTaskDelay(10);
-        printf("shooting\n");
-        // Function to pulse ultrasonic sensor.
-        pulseUltrasonic();
-    }
-}
-
-uint64_t getDistanceUltrasonic() {
-
+// Function to measure distance using the ultrasonic sensor
+uint64_t getDistanceUltrasonic(void *params) {
     width = 0;
     successful_pulse = 0;
 
@@ -41,7 +39,7 @@ uint64_t getDistanceUltrasonic() {
 
     start_time = get_absolute_time();
 
-    while (gpio_get(UltrasonicEcho) == 1) {
+    while (gpio_get(ULTRASONIC_ECHO) == 1) {
         width++;
 
         if (width > ULTRASONIC_TIMEOUT) {
@@ -59,5 +57,11 @@ uint64_t getDistanceUltrasonic() {
     } else {
         return -1;  // Return error value if measurement was unsuccessful
     }
-
 }
+
+// Callback function for ultrasonic sensor GPIO interrupts
+void gpio_callback_ultrasonic(uint gpio, uint32_t events) {
+    getDistanceUltrasonic(NULL);
+}
+
+/*** end of file ***/

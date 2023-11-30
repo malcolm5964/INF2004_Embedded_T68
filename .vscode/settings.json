@@ -39,7 +39,15 @@
         "lwipopts_examples_common.h": "c",
         "magnometer.h": "c",
         "irline.h": "c",
-        "ultrasonic.h": "c"
+        "ultrasonic.h": "c",
+        "barcode.h": "c",
+        "cmath": "c",
+        "*.tcc": "c",
+        "cinttypes": "c",
+        "cstdlib": "c",
+        "compare": "c",
+        "limits": "c",
+        "type_traits": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

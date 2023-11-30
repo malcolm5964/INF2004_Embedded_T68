@@ -89,62 +89,24 @@ void init_left_motor(){
 int max_pwm = 50000; //MAx PWM = 50000
 double kp = 5;
 
-volatile int16_t PWM_left = 18500;
-volatile int16_t PWM_right = 18500;
+volatile int16_t PWM_left = 19000;
+volatile int16_t PWM_right = 24000;
 
-
-void left_PID(int target_speed, int current_speed, int direction){
-
-    //printf("LEFT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
-
-    if(target_speed == 0)
-    {
-        set_left_speed(0);
-        PWM_left = 18500;
-    }
-    else
-    {
-        //Calculate error
-        double error = target_speed - current_speed;
-
-        //Calculate the Control Variable
-        double proportional = kp * error;
-
-        int16_t PWM = (int16_t)(proportional);
-
-        PWM_left += PWM;
-
-        set_left_speed(PWM_left);
-        printf("LEFT PWM: %i\n", PWM_left);
-    }
-        
-}
 
 void right_PID(int target_speed, int current_speed, int direction){
 
-    //printf("RIGHT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
+    printf("RIGHT Target Speed: %i Current Speed: %i\n", target_speed, current_speed);
 
-    if(target_speed == 0)
-    {
-        set_right_speed(0);
-        PWM_right = 18500;
-    }
-    else
-    {
-        //Calculate error
-        double error = target_speed - current_speed;
+    //Calculate error
+    double error = target_speed - current_speed;
 
-
-        //Calculate the Control Variable
-        double proportional = kp * error;
-
-        int16_t PWM = (int16_t)(proportional);
-
-        PWM_right += PWM;
-
-        set_right_speed(PWM_right);
-        printf("RIGHT PWM: %i\n", PWM_right);
-    }
+    //Calculate the Control Variable
+    double proportional = kp * error;
+    int16_t PWM = (int16_t)(proportional);
+    PWM_right += PWM;
+    set_right_speed(PWM_right);
+    printf("RIGHT PWM: %i\n", PWM_right);
+    
 }
 
 void move_backward(){
@@ -171,13 +133,11 @@ void turn_right(){
         endingHeading = endingHeading + 360;
     }
 
-    float endingHeadingLow = endingHeading - 1;
-    float endingHeadingHigh = endingHeading + 1
-    ;
+    float endingHeadingLow = endingHeading - 2;
+    float endingHeadingHigh = endingHeading + 2;
 
     printf("start heading: %f, end heading: %f\n", endingHeadingLow, endingHeadingHigh);
 
-    vTaskDelay(2000);
     set_direction_right();
     set_left_speed(18500);
     set_right_speed(18500);
@@ -189,23 +149,50 @@ void turn_right(){
             printf("Stop: %i\n", headingPass);
             set_right_speed(0);
             set_left_speed(0);
+            break;
         }
     }
-    //vTaskDelay(1400);
-    //if(right_ir() == 1)
-    //{
-    //    set_left_speed(0);
-    //}
 }
 
 void turn_left(){
-    set_direction_left();
-    set_right_speed(16500);
+    float startHeading = headingPass;
 
+    float endingHeading = startHeading - 90;
 
-
-    if(left_ir() == 1)
+    if(endingHeading > 360)
     {
-        set_left_speed(0);
+        endingHeading = endingHeading - 360;
     }
+    if(endingHeading < 0)
+    {
+        endingHeading = endingHeading + 360;
+    }
+
+    float endingHeadingLow = endingHeading - 2;
+    float endingHeadingHigh = endingHeading + 2;
+
+    set_direction_left();
+
+    set_left_speed(18500);
+    set_right_speed(18500);
+    
+    while (true)
+    {
+        if((headingPass > endingHeadingLow) && (headingPass < endingHeadingHigh))
+        {
+            printf("Stop: %i\n", headingPass);
+            set_right_speed(0);
+            set_left_speed(0);
+            break;
+        }
+    }
+    
+}
+
+
+void calibrate_turn(){
+    printf("calibrate turn\n");
+    set_direction_right();
+    set_left_speed(30000);
+    set_right_speed(30000);
 }

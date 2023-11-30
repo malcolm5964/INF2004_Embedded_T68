@@ -9,7 +9,6 @@ include(FreeRTOS_Kernel_import.cmake)
 project(pico_w_webserver)
 
 
-
 pico_sdk_init()
 
 message("Running makefsdata python script")
@@ -26,7 +25,10 @@ add_executable(${PROGRAM_NAME}
     driver/irline/irline.c
     driver/mapping/mapping.c
     driver/ultrasonic/ultrasonic.c
+    driver/barcode/barcode.c
 )
+
+target_compile_definitions(${PROGRAM_NAME} PRIVATE PICO_MAX_SHARED_IRQ_HANDLERS=5)
 
 target_include_directories(${PROGRAM_NAME} PRIVATE
     ${CMAKE_CURRENT_LIST_DIR}

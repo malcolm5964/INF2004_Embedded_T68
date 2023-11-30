@@ -29,6 +29,9 @@ const uint8_t ACC_ADDRESS = 0x19;
 const uint8_t CTRL_REG1_ADDR = 0x20;
 const uint8_t CTRL_REG1_ADDR_value = 0x57;
 
+static int16_t minX = -550, maxX = 690, minY = -828, maxY = 433;
+
+int temp = 0;
 
 volatile float headingPass;
 
@@ -112,8 +115,58 @@ void magnometer_init(){
 }
 
 
+void magnometer_calibrate(){
+
+    printf("magno calibrate\n");
+
+    absolute_time_t start_time = get_absolute_time();
+
+    while (true)
+    {
+        absolute_time_t current_time = get_absolute_time();
+        if(absolute_time_diff_us(start_time, current_time) > 3000000)
+        {
+            break;
+        }
+
+        printf("tesat\n");
+        //Magnometer read
+        i2c_write_blocking(i2c0, MAG_ADDRESS, &MAG_OUT_X_H_M, 1, false);
+        
+        int result = i2c_read_blocking(i2c0, MAG_ADDRESS, magData, 6, false);
+            if (result == PICO_ERROR_GENERIC) {
+                printf("I2C read error\n");
+                continue;
+            }
+
+        uint8_t xhm = magData[0];
+        uint8_t xlm = magData[1];
+        uint8_t zhm = magData[2];
+        uint8_t zlm = magData[3];
+        uint8_t yhm = magData[4];
+        uint8_t ylm = magData[5];
+
+        int raw_xm = (int16_t)((xhm << 8) | xlm);
+        int raw_ym = (int16_t)((yhm << 8) | ylm);
+        int raw_zm = (int16_t)((zhm << 8) | zlm);
+
+        //Calibration 
+        if (raw_xm < minX) minX = raw_xm;
+        if (raw_xm > maxX) maxX = raw_xm;
+        if (raw_ym < minY) minY = raw_ym;
+        if (raw_ym > maxY) maxY = raw_ym;
+
+        printf("minX: %d maxX: %d minY: %d maxY: %d\n", minX, maxX, minY, maxY);
+    }
+
+}
+
+
 //Read Magnometer Data
 float magnometer_read(){
+
+    printf("INFAL minX: %d maxX: %d minY: %d maxY: %d\n", minX, maxX, minY, maxY);
+
     while(1) {
         //Magnometer read
         i2c_write_blocking(i2c0, MAG_ADDRESS, &MAG_OUT_X_H_M, 1, false);
@@ -146,24 +199,10 @@ float magnometer_read(){
         int raw_ym = (int16_t)((yhm << 8) | ylm);
         int raw_zm = (int16_t)((zhm << 8) | zlm);
 
-        //Calibration 
-        //static int16_t minX = 0, maxX = 0, minY = 0, maxY = 0;
-        //if (raw_xm < minX) minX = raw_xm;
-        //if (raw_xm > maxX) maxX = raw_xm;
-        //if (raw_ym < minY) minY = raw_ym;
-        //if (raw_ym > maxY) maxY = raw_ym;
-        //printf("minX: %d maxX: %d minY: %d maxY: %d\n", minX, maxX, minY, maxY);
         int16_t minX = -356;
         int16_t maxX = 536;
         int16_t minY = -652;
         int16_t maxY = 248;
-
-        //int16_t xOffset = (minX + maxX) / 2;
-        //int16_t yOffset = (minY + maxY) / 2;
-//
-//
-        //int16_t x_calibrated = raw_xm - xOffset;
-        //int16_t y_calibrated = raw_ym - yOffset;
 
         //printf("X: %i, Y: %i, Z: %i\n", raw_xm, raw_ym, raw_zm);
 
@@ -192,7 +231,7 @@ float magnometer_read(){
 
 
 
-        printf("Heading: %f degrees\n", heading);
+        //printf("Heading: %f degrees\n", heading);
 
         //sleep_ms(1000);
     }

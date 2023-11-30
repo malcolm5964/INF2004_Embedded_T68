@@ -4,6 +4,8 @@
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 
+
+
 #define M_PI 3.14159265358979323846
 
 //Magnetometer
@@ -54,6 +56,8 @@ extern const uint8_t ACC_X_REG; // Address for retrieveing
 
 extern volatile float headingPass;
 
+extern int temp;
+
 
 int reg_write(i2c_inst_t *i2c, 
                 const uint addr, 
@@ -73,4 +77,5 @@ float magnometer_read();
 
 void accelerator_read();
 
+void magnometer_calibrate();
 
