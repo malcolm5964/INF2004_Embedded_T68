@@ -43,6 +43,12 @@
 <p>Flow of ultrasonic on how it detects an obstacle</p>
 </p>
 
+4. Barcode
+<p align="center">
+<img width="143" alt="Screenshot 2023-11-30 203106" src="https://github.com/malcolm5964/INF2004_Embedded_T68/assets/25952539/29e33234-5755-4ce2-82d3-675b8c4a4fc6">
+<p>Flow of barcode ISR and how to decode</p>
+</p>
+
 # Mapping Algorithm
 
 1. Create an Adjacency List for each Vertex to store vertices connected to it.<br>
